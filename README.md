@@ -69,25 +69,38 @@ This project is ideal as a foundation for a production-grade institution managem
 ## Project Structure
 
 ```
-College-ERP-system/
+College-ERP-master/
+├── CollegeERP/                 # Django project settings
+│   ├── settings.py
+│   ├── urls.py                 # Root URL routing
+│   └── wsgi.py
 │
-├── CollegeERP/               # Django project settings and configuration
-│   ├── settings.py           # Project settings (DB, installed apps, etc.)
-│   ├── urls.py               # Root URL configuration
-│   └── wsgi.py               # WSGI entry point for deployment
+├── info/                       # Main application
+│   ├── models.py               # Database models
+│   ├── admin.py                # Admin registrations
+│   ├── web_urls.py             # Web UI routes (student / teacher / admin)
+│   ├── urls.py                 # App URL entry (web + API)
+│   ├── api/                    # REST API (DRF + Djoser)
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   └── urls.py
+│   ├── views/                  # Web views by role
+│   │   ├── auth.py             # Login flows, add user
+│   │   ├── student.py
+│   │   └── teacher.py
+│   ├── templates/info/
+│   │   ├── base.html
+│   │   ├── auth/               # login, logout, admin dashboard
+│   │   ├── student/
+│   │   ├── teacher/
+│   │   └── admin/              # add student / teacher forms
+│   └── static/info/
+│       ├── bootstrap/          # SB Admin theme + vendors
+│       ├── css/
+│       └── images/
 │
-├── apis/                     # API views and URL routes
-│   ├── views.py              # Core view logic for all roles
-│   └── urls.py               # API endpoint routing
-│
-├── info/                     # Main app — models, forms, and logic
-│   ├── models.py             # Database models (Student, Teacher, Marks, etc.)
-│   ├── forms.py              # Django forms for data input
-│   ├── admin.py              # Admin panel registrations
-│   └── templates/            # HTML templates for all pages
-│
-├── manage.py                 # Django management CLI
-├── .gitignore
+├── manage.py
+├── requirements.txt
 └── README.md
 ```
 
@@ -107,7 +120,7 @@ Make sure you have the following installed:
 
 ```bash
 git clone https://github.com/Dhagash1206/College-ERP-system.git
-cd College-ERP-system
+cd College-ERP-master
 ```
 
 ### 2. Create a Virtual Environment (Recommended)
@@ -175,22 +188,18 @@ The login page is shared between students and teachers. Role is determined autom
 
 ## API Endpoints
 
-The `apis/` module exposes the following routes:
-
 | Endpoint                  | Method | Description                        | Access  |
 |---------------------------|--------|------------------------------------|---------|
-| `/`                       | GET    | Login page                         | Public  |
-| `/teacher/`               | GET    | Teacher dashboard                  | Teacher |
-| `/teacher/attendance/`    | POST   | Mark student attendance            | Teacher |
-| `/teacher/marks/`         | POST   | Enter student marks                | Teacher |
-| `/teacher/timetable/`     | GET    | View/manage timetable              | Teacher |
-| `/student/`               | GET    | Student dashboard                  | Student |
-| `/student/attendance/`    | GET    | View attendance records            | Student |
-| `/student/marks/`         | GET    | View marks                         | Student |
-| `/student/timetable/`     | GET    | View timetable                     | Student |
+| `/`                       | GET    | Role-based home dashboard          | Auth    |
+| `/accounts/login/`        | GET    | Login page                         | Public  |
+| `/api/details/`           | GET    | Student profile (token auth)       | Student |
+| `/api/attendance/`        | GET    | Attendance summary                 | Student |
+| `/api/marks/`             | GET    | Marks summary                      | Student |
+| `/api/timetable/`         | GET    | Class timetable                    | Student |
+| `/api/auth/`              | *      | Djoser token authentication        | Public  |
 | `/admin/`                 | GET    | Django admin panel                 | Admin   |
 
-> Actual routes may vary. Refer to `apis/urls.py` and `CollegeERP/urls.py` for the full routing table.
+> Web routes for teachers and students are in `info/web_urls.py`. API routes are in `info/api/urls.py`.
 
 ---
 
