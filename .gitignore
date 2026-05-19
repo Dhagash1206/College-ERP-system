@@ -50,23 +50,6 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-local_settings.py
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -80,9 +63,7 @@ celerybeat-schedule
 *.sage.py
 
 # dotenv
-.env
-
-# virtualenv
+*.env
 *.venv
 venv/
 ENV/
@@ -112,5 +93,11 @@ Thumbs.db
 media/
 *.pyc
 *.db
-*.pid
+*.pid*.log
+local_settings.py
+instance/
+.webassets-cache
+.scrapy
+docs/_build/
+target/
 
