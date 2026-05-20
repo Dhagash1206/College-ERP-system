@@ -65,6 +65,37 @@ def _require_teacher(user):
     return user.teacher, None
 
 
+def _serialize_course(course):
+    return {
+        'id': course.id,
+        'name': course.name,
+        'shortname': course.shortname,
+        'dept_id': course.dept_id,
+        'dept_name': course.dept.name,
+    }
+
+
+def _assignment_schedule(assign):
+    return [
+        {'id': slot.id, 'day': slot.day, 'period': slot.period}
+        for slot in AssignTime.objects.filter(assign=assign).order_by('day', 'period')
+    ]
+
+
+def _serialize_assignment(assign, include_schedule=False):
+    data = {
+        'id': assign.id,
+        'class_id': assign.class_id_id,
+        'class_name': str(assign.class_id),
+        'course': _serialize_course(assign.course),
+        'teacher_id': assign.teacher_id,
+        'teacher_name': assign.teacher.name,
+    }
+    if include_schedule:
+        data['schedule'] = _assignment_schedule(assign)
+    return data
+
+
 def _attendance_row(a):
     return {
         'course_id': a.course_id,
@@ -218,6 +249,161 @@ class StudentTimetableView(APIView):
         if err:
             return err
         return Response({'rows': _build_timetable_matrix(class_id=stud.class_id_id)})
+
+
+class StudentProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        stud, err = _require_student(request.user)
+        if err:
+            return err
+        cl = stud.class_id
+        assigns = Assign.objects.filter(class_id=cl).select_related('course', 'teacher')
+        return Response({
+            'usn': stud.USN,
+            'name': stud.name,
+            'sex': stud.sex,
+            'dob': stud.DOB.isoformat(),
+            'username': request.user.username,
+            'email': request.user.email or '',
+            'class': {
+                'id': cl.id,
+                'name': str(cl),
+                'section': cl.section,
+                'semester': cl.sem,
+                'dept_id': cl.dept_id,
+                'dept_name': cl.dept.name,
+            },
+            'enrolled_courses': assigns.count(),
+            'assignments': assigns.count(),
+        })
+
+
+class StudentCoursesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        stud, err = _require_student(request.user)
+        if err:
+            return err
+        assigns = Assign.objects.filter(class_id=stud.class_id).select_related(
+            'course__dept', 'teacher'
+        )
+        seen = set()
+        courses = []
+        for ass in assigns:
+            if ass.course_id in seen:
+                continue
+            seen.add(ass.course_id)
+            courses.append({
+                **_serialize_course(ass.course),
+                'teacher_name': ass.teacher.name,
+                'teacher_id': ass.teacher_id,
+                'assignment_id': ass.id,
+            })
+        return Response({'courses': courses})
+
+
+class StudentAssignmentsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        stud, err = _require_student(request.user)
+        if err:
+            return err
+        assigns = Assign.objects.filter(class_id=stud.class_id).select_related(
+            'course__dept', 'teacher', 'class_id'
+        )
+        return Response({
+            'assignments': [_serialize_assignment(a, include_schedule=True) for a in assigns],
+        })
+
+
+class TeacherProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        teacher, err = _require_teacher(request.user)
+        if err:
+            return err
+        assigns = Assign.objects.filter(teacher=teacher).select_related('course', 'class_id')
+        course_ids = assigns.values_list('course_id', flat=True).distinct()
+        return Response({
+            'id': teacher.id,
+            'name': teacher.name,
+            'sex': teacher.sex,
+            'dob': teacher.DOB.isoformat(),
+            'username': request.user.username,
+            'email': request.user.email or '',
+            'dept_id': teacher.dept_id,
+            'dept_name': teacher.dept.name,
+            'classes_count': assigns.values('class_id').distinct().count(),
+            'courses_count': len(set(course_ids)),
+            'assignments_count': assigns.count(),
+        })
+
+
+class TeacherCoursesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        teacher, err = _require_teacher(request.user)
+        if err:
+            return err
+        assigns = Assign.objects.filter(teacher=teacher).select_related('course__dept', 'class_id')
+        seen = set()
+        courses = []
+        for ass in assigns:
+            if ass.course_id in seen:
+                continue
+            seen.add(ass.course_id)
+            classes = [
+                str(a.class_id)
+                for a in Assign.objects.filter(teacher=teacher, course_id=ass.course_id)
+            ]
+            courses.append({
+                **_serialize_course(ass.course),
+                'classes': classes,
+            })
+        return Response({'courses': courses})
+
+
+class TeacherAssignmentCatalogView(APIView):
+    """Full assignment list with weekly schedule slots."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        teacher, err = _require_teacher(request.user)
+        if err:
+            return err
+        assigns = Assign.objects.filter(teacher=teacher).select_related(
+            'course__dept', 'class_id', 'teacher'
+        )
+        return Response({
+            'assignments': [_serialize_assignment(a, include_schedule=True) for a in assigns],
+        })
+
+
+class CoursesCatalogView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        courses = Course.objects.select_related('dept').order_by('dept__name', 'id')
+        if request.user.is_student:
+            stud = request.user.student
+            course_ids = Assign.objects.filter(class_id=stud.class_id).values_list(
+                'course_id', flat=True
+            )
+            courses = courses.filter(id__in=course_ids)
+        elif request.user.is_teacher:
+            course_ids = Assign.objects.filter(teacher=request.user.teacher).values_list(
+                'course_id', flat=True
+            )
+            courses = courses.filter(id__in=course_ids)
+        return Response({
+            'courses': [_serialize_course(c) for c in courses],
+        })
 
 
 class TeacherAssignmentsView(APIView):

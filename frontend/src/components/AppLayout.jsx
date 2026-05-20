@@ -27,6 +27,9 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SchoolIcon from '@mui/icons-material/School';
+import PersonIcon from '@mui/icons-material/Person';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useAuth } from '../AuthContext';
 
 const DRAWER_WIDTH = 260;
@@ -35,17 +38,23 @@ function navItems(user) {
   if (user?.role === 'student') {
     return [
       { label: 'Home', to: '/', icon: HomeIcon },
+      { label: 'Profile', to: '/student/profile', icon: PersonIcon },
+      { label: 'Courses', to: '/student/courses', icon: MenuBookIcon },
+      { label: 'Assignments', to: '/student/assignments', icon: AssignmentIcon },
+      { label: 'Timetable', to: '/student/timetable', icon: CalendarMonthIcon },
       { label: 'Attendance', to: '/student/attendance', icon: EventAvailableIcon },
       { label: 'Marks', to: '/student/marks', icon: GradeIcon },
-      { label: 'Timetable', to: '/student/timetable', icon: CalendarMonthIcon },
     ];
   }
   if (user?.role === 'teacher') {
     return [
       { label: 'Home', to: '/', icon: HomeIcon },
+      { label: 'Profile', to: '/teacher/profile', icon: PersonIcon },
+      { label: 'Courses', to: '/teacher/courses', icon: MenuBookIcon },
+      { label: 'Assignments', to: '/teacher/catalog', icon: AssignmentIcon },
+      { label: 'Timetable', to: '/teacher/timetable', icon: CalendarMonthIcon },
       { label: 'Attendance', to: '/teacher/assignments/1', icon: EventAvailableIcon },
       { label: 'Marks', to: '/teacher/assignments/2', icon: GradeIcon },
-      { label: 'Timetable', to: '/teacher/timetable', icon: CalendarMonthIcon },
       { label: 'Reports', to: '/teacher/assignments/3', icon: AssessmentIcon },
     ];
   }
@@ -75,7 +84,11 @@ export default function AppLayout() {
             key={item.to}
             component={RouterLink}
             to={item.to}
-            selected={location.pathname === item.to}
+            selected={
+              item.to === '/'
+                ? location.pathname === '/'
+                : location.pathname === item.to || location.pathname.startsWith(`${item.to}/`)
+            }
             onClick={() => setMobileOpen(false)}
           >
             <ListItemIcon>

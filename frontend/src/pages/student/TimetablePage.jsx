@@ -7,7 +7,9 @@ import PageHeader from '../../components/PageHeader';
 function slotLabel(slot) {
   if (slot.type === 'label') return slot.value;
   if (slot.type === 'break') return 'Break';
-  if (slot.type === 'class') return slot.course_name || slot.value;
+  if (slot.type === 'class') {
+    return slot.course_name ? `${slot.course_name} (${slot.value})` : slot.value;
+  }
   return '';
 }
 

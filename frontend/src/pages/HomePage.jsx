@@ -3,6 +3,9 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import GradeIcon from '@mui/icons-material/Grade';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import PersonIcon from '@mui/icons-material/Person';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { useAuth } from '../AuthContext';
 import FeatureCard from '../components/FeatureCard';
@@ -38,6 +41,33 @@ export default function HomePage() {
           </Typography>
         </Paper>
         <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <FeatureCard
+              title="Profile"
+              description="Faculty ID, department, and teaching load summary."
+              to="/teacher/profile"
+              icon={PersonIcon}
+              color="#2563eb"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <FeatureCard
+              title="Courses"
+              description="Subjects you teach and the classes assigned to each."
+              to="/teacher/courses"
+              icon={MenuBookIcon}
+              color="#7c3aed"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <FeatureCard
+              title="Assignments"
+              description="Class–course links with weekly timetable slots."
+              to="/teacher/catalog"
+              icon={AssignmentIcon}
+              color="#0891b2"
+            />
+          </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <FeatureCard
               title="Attendance"
@@ -92,6 +122,42 @@ export default function HomePage() {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={4}>
           <FeatureCard
+            title="Profile"
+            description="USN, class, department, and enrolment summary."
+            to="/student/profile"
+            icon={PersonIcon}
+            color="#2563eb"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <FeatureCard
+            title="Courses"
+            description="All subjects for your class with faculty and department."
+            to="/student/courses"
+            icon={MenuBookIcon}
+            color="#7c3aed"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <FeatureCard
+            title="Assignments"
+            description="Course–teacher assignments and weekly schedule slots."
+            to="/student/assignments"
+            icon={AssignmentIcon}
+            color="#0891b2"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <FeatureCard
+            title="Timetable"
+            description="Weekly schedule with periods and course assignments."
+            to="/student/timetable"
+            icon={CalendarMonthIcon}
+            color="#ea580c"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <FeatureCard
             title="Attendance"
             description="Subject-wise attendance percentage and class-by-class history."
             to="/student/attendance"
@@ -105,16 +171,7 @@ export default function HomePage() {
             description="Internals, events, and semester exam marks for all enrolled courses."
             to="/student/marks"
             icon={GradeIcon}
-            color="#7c3aed"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <FeatureCard
-            title="Timetable"
-            description="Weekly schedule with periods and course assignments."
-            to="/student/timetable"
-            icon={CalendarMonthIcon}
-            color="#ea580c"
+            color="#9333ea"
           />
         </Grid>
       </Grid>

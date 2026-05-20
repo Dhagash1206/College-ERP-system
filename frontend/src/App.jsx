@@ -8,6 +8,12 @@ import StudentAttendancePage from './pages/student/AttendancePage';
 import StudentAttendanceDetailPage from './pages/student/AttendanceDetailPage';
 import StudentMarksPage from './pages/student/MarksPage';
 import StudentTimetablePage from './pages/student/TimetablePage';
+import StudentProfilePage from './pages/student/ProfilePage';
+import StudentCoursesPage from './pages/student/CoursesPage';
+import StudentAssignmentsPage from './pages/student/AssignmentsPage';
+import TeacherProfilePage from './pages/teacher/ProfilePage';
+import TeacherCoursesPage from './pages/teacher/CoursesPage';
+import TeacherAssignmentCatalogPage from './pages/teacher/AssignmentCatalogPage';
 import TeacherAssignmentsPage from './pages/teacher/AssignmentsPage';
 import TeacherSessionsPage from './pages/teacher/SessionsPage';
 import TeacherAttendancePage from './pages/teacher/AttendancePage';
@@ -50,6 +56,12 @@ export default function App() {
         <Route path="student/attendance/:courseId" element={<StudentAttendanceDetailPage />} />
         <Route path="student/marks" element={<StudentMarksPage />} />
         <Route path="student/timetable" element={<StudentTimetablePage />} />
+        <Route path="student/profile" element={<StudentProfilePage />} />
+        <Route path="student/courses" element={<StudentCoursesPage />} />
+        <Route path="student/assignments" element={<StudentAssignmentsPage />} />
+        <Route path="teacher/profile" element={<TeacherProfilePage />} />
+        <Route path="teacher/courses" element={<TeacherCoursesPage />} />
+        <Route path="teacher/catalog" element={<TeacherAssignmentCatalogPage />} />
         <Route path="teacher/assignments/:choice" element={<TeacherAssignmentsPage />} />
         <Route path="teacher/assignments/:assignId/sessions" element={<TeacherSessionsPage />} />
         <Route path="teacher/sessions/:sessionId" element={<TeacherAttendancePage />} />
