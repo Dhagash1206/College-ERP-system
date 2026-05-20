@@ -38,10 +38,10 @@ This project is ideal as a foundation for a production-grade institution managem
 |------------|-----------------------------------|
 | Language   | Python 3                          |
 | Framework  | Django                            |
-| Frontend   | HTML5, CSS3, SCSS, JavaScript     |
+| Frontend   | React 19 + Material UI (MUI)    |
 | Database   | SQLite (dev) / PostgreSQL (prod)  |
-| Styling    | Bootstrap + custom SCSS           |
-| APIs       | Django REST-style views           |
+| Styling    | MUI theme (no custom CSS files) |
+| APIs       | Django REST Framework + session |
 
 ---
 
@@ -88,16 +88,12 @@ College-ERP-master/
 │   │   ├── auth.py             # Login flows, add user
 │   │   ├── student.py
 │   │   └── teacher.py
-│   ├── templates/info/
-│   │   ├── base.html
-│   │   ├── auth/               # login, logout, admin dashboard
-│   │   ├── student/
-│   │   ├── teacher/
-│   │   └── admin/              # add student / teacher forms
-│   └── static/info/
-│       ├── bootstrap/          # SB Admin theme + vendors
-│       ├── css/
-│       └── images/
+│   ├── templates/spa.html      # Minimal shell for React
+│   └── static/app/             # Built React bundle (after npm run build)
+│
+├── frontend/                   # React + MUI source (Vite)
+│   ├── src/
+│   └── package.json
 │
 ├── manage.py
 ├── requirements.txt
@@ -161,14 +157,27 @@ python manage.py createsuperuser
 
 Follow the prompts to set your admin username and password.
 
-### 6. Run the Development Server
+### 6. Build the React Frontend
+
+```bash
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
+This compiles the UI into `info/static/app/` (served by Django).
+
+### 7. Run the Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-Visit `http://127.0.0.1:8000` in your browser.
+Visit `http://127.0.0.1:8000` in your browser (login at `/accounts/login/`).
 Admin panel is available at `http://127.0.0.1:8000/admin`.
+
+After changing React code, run `npm run build` again inside `frontend/`.
 
 ---
 
@@ -191,7 +200,9 @@ The login page is shared between students and teachers. Role is determined autom
 | Endpoint                  | Method | Description                        | Access  |
 |---------------------------|--------|------------------------------------|---------|
 | `/`                       | GET    | Role-based home dashboard          | Auth    |
-| `/accounts/login/`        | GET    | Login page                         | Public  |
+| `/accounts/login/`        | GET    | React login page                   | Public  |
+| `/api/web/login/`         | POST   | Session login (JSON)               | Public  |
+| `/api/web/me/`            | GET    | Current user profile               | Auth    |
 | `/api/details/`           | GET    | Student profile (token auth)       | Student |
 | `/api/attendance/`        | GET    | Attendance summary                 | Student |
 | `/api/marks/`             | GET    | Marks summary                      | Student |
