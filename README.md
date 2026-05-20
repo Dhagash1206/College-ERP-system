@@ -2,9 +2,22 @@
 
 A full-featured college management system built with the Django framework. It provides a unified platform for students, teachers, and administrators to manage academic operations — including attendance tracking, marks management, and timetable scheduling.
 
+This project follows Django's **MVT (Model-View-Template)** architecture.
+
+- **Model** — defines the database structure; each class maps to a table (`Student`, `Teacher`, `Attendance`)
+- **View** — handles business logic, processes incoming requests, and queries the database
+- **Template** — renders the final HTML returned to the browser
+- **URL Router** — maps endpoint paths to their corresponding views
+
+**Request flow:**
+`Browser` → `urls.py` → `views.py` → `models.py` → `template` → `HTML response`
+
+Django's clean separation of data, logic, and presentation keeps each portal —
+Admin, Teacher, and Student — modular, secure, and independently maintainable.
+
 > Built with Python & Django | Role-based access | Admin, Teacher, and Student portals
 
----
+<br>
 
 ## Table of Contents
 
@@ -12,13 +25,12 @@ A full-featured college management system built with the Django framework. It pr
 - [Tech Stack](#tech-stack)
 - [Features](#features)
 - [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
 - [Login Credentials](#login-credentials)
 - [API Endpoints](#api-endpoints)
-- [Screenshots](#screenshots)
-- [License](#license)
 
 ---
+<br>
+<br>
 
 ## Overview
 
@@ -31,6 +43,8 @@ The College ERP System is designed to digitize and simplify day-to-day college o
 This project is ideal as a foundation for a production-grade institution management system.
 
 ---
+<br>
+<br>
 
 ## Tech Stack
 
@@ -44,6 +58,8 @@ This project is ideal as a foundation for a production-grade institution managem
 | APIs       | Django REST Framework + session |
 
 ---
+<br>
+<br>
 
 ## Features
 
@@ -65,6 +81,8 @@ This project is ideal as a foundation for a production-grade institution managem
 - Bulk data operations supported through the admin interface
 
 ---
+<br>
+<br>
 
 ## Project Structure
 
@@ -102,7 +120,31 @@ College-ERP-master/
 
 ---
 
-## Getting Started
+
+<br>
+<br>
+
+## API Endpoints
+
+| Endpoint                  | Method | Description                        | Access  |
+|---------------------------|--------|------------------------------------|---------|
+| `/`                       | GET    | Role-based home dashboard          | Auth    |
+| `/accounts/login/`        | GET    | React login page                   | Public  |
+| `/api/web/login/`         | POST   | Session login (JSON)               | Public  |
+| `/api/web/me/`            | GET    | Current user profile               | Auth    |
+| `/api/details/`           | GET    | Student profile (token auth)       | Student |
+| `/api/attendance/`        | GET    | Attendance summary                 | Student |
+| `/api/marks/`             | GET    | Marks summary                      | Student |
+| `/api/timetable/`         | GET    | Class timetable                    | Student |
+| `/api/auth/`              | *      | Djoser token authentication        | Public  |
+| `/admin/`                 | GET    | Django admin panel                 | Admin   |
+
+> Web routes for teachers and students are in `info/web_urls.py`. API routes are in `info/api/urls.py`.
+
+---
+
+<br>
+<br>
 
 ### Prerequisites
 
@@ -181,6 +223,9 @@ After changing React code, run `npm run build` again inside `frontend/`.
 
 ---
 
+<br>
+<br>
+
 ## Login Credentials
 
 The login page is shared between students and teachers. Role is determined automatically based on the user type.
@@ -195,54 +240,60 @@ The login page is shared between students and teachers. Role is determined autom
 
 ---
 
-## API Endpoints
+<br>
+<br>
 
-| Endpoint                  | Method | Description                        | Access  |
-|---------------------------|--------|------------------------------------|---------|
-| `/`                       | GET    | Role-based home dashboard          | Auth    |
-| `/accounts/login/`        | GET    | React login page                   | Public  |
-| `/api/web/login/`         | POST   | Session login (JSON)               | Public  |
-| `/api/web/me/`            | GET    | Current user profile               | Auth    |
-| `/api/details/`           | GET    | Student profile (token auth)       | Student |
-| `/api/attendance/`        | GET    | Attendance summary                 | Student |
-| `/api/marks/`             | GET    | Marks summary                      | Student |
-| `/api/timetable/`         | GET    | Class timetable                    | Student |
-| `/api/auth/`              | *      | Djoser token authentication        | Public  |
-| `/admin/`                 | GET    | Django admin panel                 | Admin   |
-
-> Web routes for teachers and students are in `info/web_urls.py`. API routes are in `info/api/urls.py`.
-
----
-
-## Screenshots
-
-### Teacher Dashboard
-
-![Teacher Dashboard](https://i.imgur.com/pMAoEbG.png)
-![Teacher Attendance](https://i.imgur.com/ZiQ3RRA.png)
-![Teacher Marks Entry](https://i.imgur.com/i025CJW.png)
-![Teacher Timetable](https://i.imgur.com/HQlLYmC.png)
-![Teacher View 5](https://i.imgur.com/j6RyBmU.png)
-![Teacher View 6](https://i.imgur.com/xIKEMvQ.png)
-![Teacher View 7](https://i.imgur.com/4Rl7Fpv.png)
-
-### Student Dashboard
+# System View
 
 ![Student Dashboard](https://i.imgur.com/isL9cjz.png)
-![Student Attendance](https://i.imgur.com/5pzl7m3.png)
+
+<br>
+<br>
+
+
+![Teacher Timetable](https://i.imgur.com/HQlLYmC.png)
+
+<br>
+<br>
+
+![Teacher View 5](https://i.imgur.com/j6RyBmU.png)
+
+<br>
+<br>
+
+![Teacher View 7](https://i.imgur.com/4Rl7Fpv.png)
+
+<br>
+<br>
+
 ![Student Marks](https://i.imgur.com/7zWhHZx.png)
-![Student Timetable](https://i.imgur.com/fu7gxk8.png)
+
+<br>
+<br>
+
+<img width="1601" height="489" alt="image" src="https://github.com/user-attachments/assets/5341864f-d3af-40de-87e7-8a950c4464fb" />
+
+
+<br>
+<br>
+
+
 ![Student View 5](https://i.imgur.com/NZqU268.png)
 
-### Admin Panel
 
-![Admin Panel](https://i.imgur.com/sDvDc9N.png)
+<br>
+<br>
+
 ![Admin Models](https://i.imgur.com/tMKWx6f.png)
-![Admin Detail](https://i.imgur.com/PvCsNeB.png)
+
+<br>
+<br>
 
 ---
+<br>
+<br>
 
-## Deployment Notes
+# Deployment Notes
 
 For production deployment, consider the following:
 
@@ -253,6 +304,8 @@ For production deployment, consider the following:
 - Collect static files: `python manage.py collectstatic`
 
 ---
+<br>
+<br>
 
 
 ## License
