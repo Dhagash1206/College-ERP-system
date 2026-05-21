@@ -1,5 +1,5 @@
 from django.test import TestCase
-from info.models import Dept, Class, Course, User, Student, Teacher, Assign, AssignTime, AttendanceTotal, Attendance, StudentCourse, Marks, MarksClass
+from info.models import Dept, Class, Course, User, Student, Teacher, Assign, Attendance
 from django.urls import reverse
 from django.test.client import Client
 
